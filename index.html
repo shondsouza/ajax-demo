@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AJAX with JavaScript and jQuery</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: #ffffff;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        button {
+            padding: 10px 15px;
+            margin: 10px 0;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        pre, p {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>AJAX Demo</h1>
+    <button id="ajax-js">Load Text (JavaScript AJAX)</button>
+    <p id="content-js"></p>
+
+    <button id="ajax-jquery">Load Text (jQuery AJAX)</button>
+    <p id="content-jquery"></p>
+
+    <button id="get-json">Load JSON (getJSON)</button>
+    <pre id="json-content"></pre>
+
+    <button id="parse-json">Parse JSON</button>
+    <pre id="parsed-json"></pre>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    // a. AJAX request using pure JavaScript
+    document.getElementById("ajax-js").addEventListener("click", function () {
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", "data.txt", true);
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                document.getElementById("content-js").textContent = xhr.responseText;
+            } else {
+                document.getElementById("content-js").textContent = "Error loading content.";
+            }
+        };
+        xhr.onerror = function () {
+            document.getElementById("content-js").textContent = "Network error.";
+        };
+        xhr.send();
+    });
+
+    // b. AJAX request using jQuery
+    $("#ajax-jquery").click(function () {
+        $.ajax({
+            url: "data.txt",
+            method: "GET",
+            success: function (data) {
+                $("#content-jquery").text(data);
+            },
+            error: function () {
+                $("#content-jquery").text("Error loading content.");
+            }
+        });
+    });
+
+    // c. Using getJSON() method
+    $("#get-json").click(function () {
+        $.getJSON("data.json", function (data) {
+            $("#json-content").text(JSON.stringify(data, null, 2));
+        }).fail(function () {
+            $("#json-content").text("Error fetching JSON.");
+        });
+    });
+
+    // d. Using parseJSON() method
+    $("#parse-json").click(function () {
+        const jsonString = '{"name": "Jane Doe", "age": 25, "location": "California"}';
+        try {
+            const jsonData = $.parseJSON(jsonString);
+            $("#parsed-json").html(
+                `Name: ${jsonData.name}<br>Age: ${jsonData.age}<br>Location: ${jsonData.location}`
+            );
+        } catch (error) {
+            $("#parsed-json").text("Error parsing JSON.");
+        }
+    });
+</script>
+</body>
+</html>
